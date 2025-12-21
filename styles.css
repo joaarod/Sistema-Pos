@@ -1,0 +1,859 @@
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary: #64748b;
+    --success: #16a34a;
+    --success-dark: #15803d;
+    --danger: #dc2626;
+    --danger-dark: #b91c1c;
+    --info: #0891b2;
+    --info-dark: #0e7490;
+    --warning: #f59e0b;
+    --bg-main: #f8fafc;
+    --bg-panel: #ffffff;
+    --border: #e2e8f0;
+    --text-main: #1e293b;
+    --text-secondary: #64748b;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-main);
+    padding: 20px;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.panel {
+    background: var(--bg-panel);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.panel h2 {
+    margin-bottom: 20px;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 10px;
+}
+
+.panel h3 {
+    margin: 15px 0 10px 0;
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+
+/* FORMULARIOS */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: end;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder {
+    color: #cbd5e1;
+}
+
+/* BOTONES */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: var(--shadow);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: var(--success-dark);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: var(--danger-dark);
+}
+
+.btn-info {
+    background: var(--info);
+    color: white;
+}
+
+.btn-info:hover {
+    background: var(--info-dark);
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
+
+.btn-print {
+    background: #059669;
+    color: white;
+}
+
+.btn-print:hover {
+    background: #047857;
+}
+
+.btn-add {
+    background: var(--success);
+    color: white;
+    height: 45px;
+    margin-top: 0;
+}
+
+.btn-add:hover {
+    background: var(--success-dark);
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* TABS DE CATEGORÍAS */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--bg-main);
+    border-radius: 8px;
+}
+
+.tab-btn {
+    padding: 10px 16px;
+    background: white;
+    color: var(--text-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+    margin: 0;
+}
+
+.tab-btn:hover {
+    background: var(--bg-main);
+    border-color: var(--primary);
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* BÚSQUEDA */
+.buscar-container {
+    margin-bottom: 15px;
+}
+
+.buscar-container input {
+    border-width: 2px;
+}
+
+/* LISTA DE PRODUCTOS (para venta) */
+#listaProductos {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    margin: 10px 0;
+    background: white;
+}
+
+#listaProductos:empty {
+    display: none;
+}
+
+#listaProductos li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#listaProductos li:hover {
+    background: var(--bg-main);
+    padding-left: 20px;
+}
+
+#listaProductos li:last-child {
+    border-bottom: none;
+}
+
+/* INVENTARIO GRID */
+.inventario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.inventario-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.inventario-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+}
+
+.inventario-card .producto-nombre {
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.inventario-card .producto-categoria {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.inventario-card .producto-codigo {
+    font-size: 0.75rem;
+    color: var(--info);
+    font-family: 'Courier New', monospace;
+    margin-bottom: 5px;
+    background: #e0f2fe;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.inventario-card .producto-precio {
+    font-size: 1.2rem;
+    color: var(--success);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.inventario-card .producto-stock {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    background: var(--bg-main);
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.inventario-card .producto-stock.bajo {
+    background: #fee2e2;
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.producto-acciones {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-editar, .btn-eliminar {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0;
+}
+
+.btn-editar {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-editar:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-eliminar {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background: var(--danger-dark);
+    transform: translateY(-2px);
+}
+
+.inventario-vacio {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* CARRITO */
+.carrito-container {
+    margin: 20px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+}
+
+td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+    text-align: center;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background: var(--bg-main);
+}
+
+/* TOTAL Y VUELTO */
+.total-display, .vuelto-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 15px 0;
+    padding: 15px;
+    text-align: right;
+    background: var(--bg-main);
+    border-radius: 8px;
+    border: 2px solid var(--border);
+}
+
+.total-display {
+    color: var(--success);
+}
+
+.vuelto-display {
+    color: var(--primary);
+}
+
+/* REPORTE */
+#reporte {
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 2px solid var(--border);
+    line-height: 1.6;
+}
+
+#reporte:empty {
+    display: none;
+}
+
+/* SCROLLBAR PERSONALIZADO */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabs {
+        justify-content: center;
+    }
+    
+    .inventario-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+/* TICKET DE IMPRESIÓN */
+.ticket-impresion {
+    display: none;
+    width: 80mm;
+    padding: 10mm;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .ticket-impresion, .ticket-impresion * {
+        visibility: visible;
+    }
+    
+    .ticket-impresion {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80mm;
+        padding: 5mm;
+    }
+}
+
+.ticket-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.ticket-header h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.ticket-header p {
+    margin: 2px 0;
+    font-size: 11px;
+}
+
+.ticket-tabla {
+    width: 100%;
+    font-size: 11px;
+}
+
+.ticket-tabla th {
+    text-align: left;
+    padding: 3px 0;
+    background: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.ticket-tabla td {
+    padding: 3px 0;
+    border: none;
+}
+
+.ticket-totales {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.ticket-totales p {
+    margin: 3px 0;
+}
+
+.ticket-footer {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 11px;
+}
+
+.ticket-footer p {
+    margin: 2px 0;
+}
+
+hr {
+    border: none;
+    border-top: 1px dashed #000;
+    margin: 8px 0;
+}
+/* ====== MODO OSCURO ====== */
+body.dark-mode {
+    --bg-main: #0f172a;      /* Fondo muy oscuro (azul noche) */
+    --bg-panel: #1e293b;     /* Paneles gris azulado oscuro */
+    --text-main: #f8fafc;    /* Texto casi blanco */
+    --text-secondary: #94a3b8; /* Texto secundario gris claro */
+    --border: #334155;       /* Bordes oscuros */
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); /* Sombras más fuertes */
+}
+
+/* Ajustes específicos para el Modo Oscuro */
+body.dark-mode input,
+body.dark-mode select {
+    background: #0f172a;
+    color: white;
+    border-color: #334155;
+}
+
+body.dark-mode .inventario-card,
+body.dark-mode #listaProductos,
+body.dark-mode table, 
+body.dark-mode .total-display,
+body.dark-mode .vuelto-display {
+    background: #1e293b;
+    border-color: #334155;
+    color: white;
+}
+
+body.dark-mode #listaProductos li:hover {
+    background: #334155;
+}
+
+body.dark-mode .tab-btn {
+    background: #1e293b;
+    color: #94a3b8;
+    border-color: #334155;
+}
+
+body.dark-mode .tab-btn:hover {
+    background: #334155;
+}
+
+/* Ajuste para el gráfico en modo oscuro (fondo blanco para contraste) */
+body.dark-mode .panel-stats > div > div {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+body.dark-mode .panel-stats h3 {
+    color: white !important;
+}
+
+/* Botón flotante del modo oscuro */
+.btn-theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--text-main);
+    color: var(--bg-main);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-theme-toggle:hover {
+    transform: rotate(15deg) scale(1.1);
+}
+/* ====== ESTILOS DE NAVEGACIÓN Y LAYOUT ====== */
+
+/* Barra Superior */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: var(--bg-panel);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.nav-btn {
+    padding: 12px 25px;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--bg-main);
+    color: var(--primary);
+}
+
+.nav-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+/* Control de Vistas */
+.vista {
+    display: none; /* Ocultar todo por defecto */
+    animation: fadeIn 0.3s ease;
+}
+
+.vista.active {
+    display: block; /* Mostrar solo la activa */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* LAYOUT POS (2 COLUMNAS) */
+/* Esto pone el carrito a la izquierda y el inventario a la derecha */
+.vista-pos-layout {
+    display: grid !important; /* Forzar grid cuando está activo */
+    grid-template-columns: 350px 1fr; /* Columna fija de 350px para carrito, resto para inventario */
+    gap: 20px;
+    align-items: start;
+}
+
+/* Ajustes para que el carrito quede fijo y visible */
+.columna-carrito .panel {
+    position: sticky;
+    top: 20px; /* Se queda pegado al hacer scroll si fuera necesario */
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.tabla-scroll {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 150px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Ajustes Inventario */
+.columna-inventario .inventario-grid {
+    max-height: calc(100vh - 250px); /* Altura dinámica */
+    overflow-y: auto;
+}
+
+/* RESPONSIVE: En celular vuelve a ser una sola columna */
+@media (max-width: 900px) {
+    .vista-pos-layout {
+        grid-template-columns: 1fr;
+    }
+    .columna-carrito .panel {
+        position: static;
+        max-height: none;
+    }
+}
+/* Corrección para la lista desplegable del buscador */
+#listaProductos {
+    position: absolute;
+    width: 100%;
+    background: var(--bg-panel);
+    z-index: 1000; /* Asegura que flote sobre todo */
+    box-shadow: var(--shadow-lg);
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Necesitamos que el contenedor del buscador sea relativo para que la lista se pegue a él */
+.buscar-container {
+    position: relative; 
+    z-index: 1001;
+}
+/* =========================================
+   NUEVO FONDO: ANIMATED CIRCLES/SQUARES
+   ========================================= */
+
+   .area {
+    /* El degradado violeta del diseño original */
+    background: #4e54c8;  
+    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
+    background: linear-gradient(to left, #8f94fb, #4e54c8); 
+    
+    /* Configuración para que quede FIJO en el fondo */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Muy atrás, detrás de todo */
+}
+
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2); /* Cuadrados semitransparentes */
+    animation: animate 25s linear infinite;
+    bottom: -150px; /* Empiezan debajo de la pantalla */
+}
+
+/* Configuración individual de cada cuadrado para que se vea aleatorio */
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+.circles li:nth-child(4){ left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+.circles li:nth-child(5){ left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+.circles li:nth-child(6){ left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+.circles li:nth-child(7){ left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+.circles li:nth-child(8){ left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+.circles li:nth-child(9){ left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+.circles li:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+/* La animación que los hace subir y girar */
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+    100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Almacén POS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <button id="btnTema" class="btn-theme-toggle" title="Cambiar Tema">🌙</button>
+
+    <nav class="main-nav">
+        <button class="nav-btn active" onclick="cambiarVista('venta')">🛒 Punto de Venta</button>
+        <button class="nav-btn" onclick="cambiarVista('admin')">⚙️ Administración</button>
+        <button class="nav-btn" onclick="cambiarVista('caja')">📈 Caja y Reportes</button>
+    </nav>
+    
+    <div class="container">
+    
+        <div id="vista-venta" class="vista active vista-pos-layout">
+            
+            <div class="columna-carrito">
+                <div class="panel panel-venta">
+                    <h2>💰 Punto de Venta</h2>
+                    <div class="buscar-container">
+                        <input id="buscador" type="text" placeholder="🔍 Buscar o escanear...">
+                    </div>
+                    <ul id="listaProductos"></ul>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input id="ventaCantidad" type="number" value="1" min="1">
+                        </div>
+                        <button id="btnAgregar" class="btn-add">➕ Agregar</button>
+                    </div>
+    
+                    <div class="carrito-container">
+                        <h3>🛒 Carrito</h3>
+                        <div class="tabla-scroll"> <table id="tabla">
+                                <tr><th>Prod.</th><th>Cant.</th><th>Subt.</th></tr>
+                            </table>
+                        </div>
+                    </div>
+    
+                    <div id="total" class="total-display">Total: $0.00</div>
+    
+                    <div class="form-group">
+                        <select id="formaPago" style="margin-bottom: 10px;">
+                            <option value="efectivo">💵 Efectivo</option>
+                            <option value="transferencia">🏦 Transferencia</option>
+                            <option value="tarjeta">💳 Tarjeta</option>
+                        </select>
+                        <input id="pago" type="number" step="0.01" min="0" placeholder="Pago del Cliente ($)">
+                    </div>
+    
+                    <div id="vuelto" class="vuelto-display"></div>
+    
+                    <div class="button-group">
+                        <button id="btnFinalizar" class="btn-success">✅ Cobrar</button>
+                        <button id="btnNueva" class="btn-secondary">🗑️ Limpiar</button>
+                    </div>
+                    <button id="btnImprimirTicket" class="btn-print" style="display: none; margin-top: 10px;">🖨️ Imprimir Ticket</button>
+                </div>
+            </div>
+    
+            <div class="columna-inventario">
+                <div class="panel panel-inventario" style="height: 100%;">
+                    <h2>📊 Catálogo de Productos</h2>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-categoria="">📋 Todos</button>
+                        <button class="tab-btn" data-categoria="Promos" style="color: #dc2626; border-color: #dc2626; font-weight: 800;">🔥 Promos</button>
+                        <button class="tab-btn" data-categoria="Bebidas">🥤 Bebidas</button>
+                        <button class="tab-btn" data-categoria="Snacks">🍿 Snacks</button>
+                        <button class="tab-btn" data-categoria="Fiambres">🥩 Fiambres</button>
+                        <button class="tab-btn" data-categoria="Almacén">🛒 Almacén</button>
+                        <button class="tab-btn" data-categoria="Limpieza">🧹 Limpieza</button>
+                        <button class="tab-btn" data-categoria="Otros">📌 Otros</button>
+                    </div>
+                    <div class="buscar-container">
+                        <input id="buscadorInventario" type="text" placeholder="🔍 Filtrar inventario...">
+                    </div>
+                    <div id="inventarioLista" class="inventario-grid"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div id="vista-admin" class="vista">
+            <div class="panel panel-productos">
+                <h2>📦 Gestión de Productos (Agregar/Editar)</h2>
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input id="nombre" type="text" placeholder="Ej: Coca Cola 500ml">
+                </div>
+                <div class="form-group">
+                    <label>Código de Barras</label>
+                    <input id="codigoBarras" type="text" placeholder="Escanee o ingrese código">
+                </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="categoria">
+                        <option value="Bebidas">🥤 Bebidas</option>
+                        <option value="Snacks">🍿 Snacks</option>
+                        <option value="Fiambres">🥩 Fiambres</option>
+                        <option value="Almacén">🛒 Almacén</option>
+                        <option value="Limpieza">🧹 Limpieza</option>
+                        <option value="Otros">📌 Otros</option>
+                    </select>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="form-group"><label>Costo ($)</label><input id="costo" type="number" placeholder="Costo"></div>
+                    <div class="form-group"><label>Precio Venta ($)</label><input id="precio" type="number" placeholder="Venta"></div>
+                    <div class="form-group"><label>Stock</label><input id="stock" type="number" placeholder="Cant."></div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 15px; background: #fff1f2; padding: 10px; border-radius: 8px; border: 1px solid #fecdd3;">
+                    <input type="checkbox" id="esPromo" style="width: 20px; height: 20px; accent-color: #dc2626; margin: 0;">
+                    <label for="esPromo" style="margin: 0; cursor: pointer; color: #dc2626; font-weight: bold;">🔥 ¿Es una Promoción?</label>
+                </div>
+                <button id="btnGuardarProducto" class="btn-primary">💾 Guardar Producto</button>
+            </div>
+    
+            <div class="panel panel-historial" style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>📜 Historial de Transacciones</h2>
+                    <button onclick="actualizarHistorial()" class="btn-secondary" style="width: auto; margin: 0;">🔄 Actualizar</button>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table id="tablaHistorial">
+                        <thead><tr><th>Hora</th><th>Productos</th><th>Total</th><th>Pago</th><th>Acción</th></tr></thead>
+                        <tbody id="listaHistorial"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <div id="vista-caja" class="vista">
+            <div class="panel panel-stats">
+                <h2>📊 Estadísticas del Día</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                        <h3 style="text-align: center; font-size: 1rem;">Ventas por Categoría</h3>
+                        <div style="position: relative; height: 250px;"><canvas id="chartCategorias"></canvas></div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                        <h3 style="text-align: center; font-size: 1rem;">Formas de Pago</h3>
+                        <div style="position: relative; height: 250px;"><canvas id="chartPagos"></canvas></div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="panel panel-cierre" style="margin-top: 20px;">
+                <h2>📈 Cierre de Caja</h2>
+                <div class="button-group">
+                    <button id="btnReporte" class="btn-info">📊 Ver Reporte Diario</button>
+                    <button id="btnCerrarCaja" class="btn-danger">🔒 Cerrar Caja</button>
+                </div>
+                <button id="btnExportarExcel" class="btn-success" style="margin-top: 10px;">📥 Exportar Reporte a Excel</button>
+                <pre id="reporte"></pre>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border);">
+                    <button id="btnReiniciarReporte" class="btn-warning">🔄 Reiniciar Reporte</button>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    
+    <div id="ticketImpresion" class="ticket-impresion">
+        <div class="ticket-header"><h2>ALMACÉN</h2><p>Sistema POS</p><p id="ticketFecha"></p><p id="ticketHora"></p></div>
+        <hr>
+        <table class="ticket-tabla"><thead><tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr></thead><tbody id="ticketDetalle"></tbody></table>
+        <hr>
+        <div class="ticket-totales"><p id="ticketTotal"></p><p id="ticketFormaPago"></p><p id="ticketPago"></p><p id="ticketVuelto"></p></div>
+        <div class="ticket-footer"><p>¡Gracias por su compra!</p><p>Vuelva pronto</p></div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div class="area">
+    <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
