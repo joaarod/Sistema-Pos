@@ -247,37 +247,56 @@ button:active {
 }
 
 /* LISTA DE PRODUCTOS (para venta) */
-#listaProductos {
-    list-style: none;
-    max-height: 200px;
-    overflow-y: auto;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    margin: 10px 0;
-    background: white;
+/* Corrección para que el buscador flote correctamente */
+.buscar-container {
+    position: relative; /* Esto atrapa a la lista absoluta */
+    z-index: 1001;
 }
 
+#listaProductos {
+    position: absolute; /* Para que flote */
+    top: 100%; /* Justo debajo del input */
+    left: 0;
+    width: 100%;
+    background: white; /* Fondo blanco solido */
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Sombra para resaltar */
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 2000; /* Para que aparezca ENCIMA de todo lo demás */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ocultar si está vacío */
 #listaProductos:empty {
     display: none;
 }
 
+/* Estilo de los items */
 #listaProductos li {
-    padding: 12px 15px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    transition: all 0.2s ease;
-    display: flex;
+    display: flex; 
     justify-content: space-between;
-    align-items: center;
 }
 
 #listaProductos li:hover {
-    background: var(--bg-main);
-    padding-left: 20px;
+    background-color: #f1f5f9;
+    color: #2563eb;
 }
 
-#listaProductos li:last-child {
-    border-bottom: none;
+/* Modo oscuro para la lista (si lo usas) */
+body.dark-mode #listaProductos {
+    background: #1e293b;
+    border-color: #334155;
+    color: white;
+}
+body.dark-mode #listaProductos li:hover {
+    background-color: #334155;
 }
 
 /* INVENTARIO GRID */

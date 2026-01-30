@@ -11,9 +11,15 @@
     <button id="btnTema" class="btn-theme-toggle" title="Cambiar Tema">🌙</button>
 
     <nav class="main-nav">
-        <button class="nav-btn active" onclick="cambiarVista('venta')">🛒 Punto de Venta</button>
+        <button class="nav-btn active" onclick="cambiarVista('venta')">🛒 Ventas (Vista Admin)</button>
         <button class="nav-btn" onclick="cambiarVista('admin')">⚙️ Administración</button>
-        <button class="nav-btn" onclick="cambiarVista('caja')">📈 Caja y Reportes</button>
+        <button class="nav-btn" onclick="cambiarVista('caja')">📈 Reportes</button>
+        
+        <div style="flex: 1;"></div> 
+
+        <a href="pos.html" class="nav-btn btn-pos-mode" style="background: var(--success); color: white; text-decoration: none; display: flex; align-items: center;">
+            🚀 ABRIR MODO CAJERO (POS)
+        </a>
     </nav>
     
     <div class="container">

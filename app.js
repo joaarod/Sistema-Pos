@@ -11,7 +11,6 @@ let categoriaActiva = '';
 // ==========================================
 //  CONEXIÓN CON EL HTML (GLOBALIZACIÓN)
 // ==========================================
-// Asignamos las funciones a 'window' para que el HTML pueda usarlas
 window.guardarProducto = guardarProducto;
 window.editarProducto = editarProducto;
 window.eliminarProducto = eliminarProducto;
@@ -294,8 +293,12 @@ function finalizarVenta() {
     Swal.fire({
         icon: 'success',
         title: '¡Venta Exitosa!',
+        text: 'Venta registrada correctamente',
         timer: 2000,
         showConfirmButton: false
+    }).then(() => {
+        // Limpieza automática
+        nuevaVenta();
     });
 }
 
@@ -313,10 +316,7 @@ function nuevaVenta() {
 }
 
 // ====== NAVEGACIÓN Y VISTAS ======
-// ====== NAVEGACIÓN Y VISTAS (BUSCA ESTA FUNCIÓN EN TU APP.JS Y REEMPLÁZALA) ======
 function cambiarVista(nombreVista) {
-    console.log('🔄 Cambiando a vista:', nombreVista);
-    
     // Ocultar todas las vistas
     document.querySelectorAll('.vista').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -325,31 +325,29 @@ function cambiarVista(nombreVista) {
     const vistaElement = document.getElementById('vista-' + nombreVista);
     if (vistaElement) {
         vistaElement.classList.add('active');
+    } else {
+        console.error('No se encontró la vista:', nombreVista);
     }
     
-    // Activar botón correspondiente
-    const btns = document.querySelectorAll('.nav-btn');
-    if (nombreVista === 'venta') btns[0].classList.add('active');
-    if (nombreVista === 'admin') btns[1].classList.add('active');
-    if (nombreVista === 'caja') btns[2].classList.add('active');
+    // Activar botón correspondiente buscando por el texto del onclick
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        const onClickAttr = btn.getAttribute('onclick');
+        if(onClickAttr && onClickAttr.includes(`'${nombreVista}'`)) {
+            btn.classList.add('active');
+        }
+    });
 
     // Acciones específicas por vista
     if (nombreVista === 'caja') {
-        console.log('📊 Vista de Caja - preparando gráficos...');
-        
-        // Esperar a que el DOM esté listo (MUY IMPORTANTE)
         setTimeout(() => {
-            console.log('🎨 Actualizando gráficos ahora...');
             actualizarGraficos(ventas, productos);
-        }, 300); // Aumentado a 300ms
+        }, 100);
     }
     
     if (nombreVista === 'admin') {
         actualizarHistorial();
     }
 }
-
-// ====== BUSCA ESTAS FUNCIONES EN TU APP.JS Y REEMPLÁZALAS ======
 
 // ====== REPORTES Y EXCEL ======
 function verReporte() {
@@ -360,25 +358,16 @@ function verReporte() {
     const fechaHoy = hoy.getFullYear() + '-' + 
                      String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
                      String(hoy.getDate()).padStart(2, '0');
-    const fechaLegible = hoy.toLocaleDateString('es-AR');
-    
-    console.log('📊 Generando reporte para:', fechaHoy);
     
     let totalDia = 0;
-    let gananciaDia = 0;
-    let resumenProductos = {};
     let resumenPagos = { efectivo: 0, transferencia: 0, tarjeta: 0 };
     let ventasHoy = 0;
 
-    // Filtrar ventas de hoy
     ventas.forEach(v => {
-        // Comparar fechas de forma flexible
         let esHoy = false;
-        
         if (v.fecha === fechaHoy) {
             esHoy = true;
         } else if (v.fecha && v.fecha.includes('/')) {
-            // Convertir DD/MM/YYYY a YYYY-MM-DD
             const partes = v.fecha.split('/');
             if (partes.length === 3) {
                 const fechaConv = partes[2] + '-' + 
@@ -389,56 +378,21 @@ function verReporte() {
         }
         
         if (esHoy) {
-            console.log('  ✅ Venta encontrada:', v);
             ventasHoy++;
             totalDia += v.total || 0;
-            
-            // Sumar por forma de pago
             if (resumenPagos[v.formaPago] !== undefined) {
                 resumenPagos[v.formaPago] += v.total || 0;
-            }
-            
-            // Procesar detalle de productos
-            if (v.detalle && Array.isArray(v.detalle)) {
-                v.detalle.forEach(d => {
-                    const nombreProd = d.producto;
-                    resumenProductos[nombreProd] = (resumenProductos[nombreProd] || 0) + (d.cantidad || 0);
-                    
-                    // Calcular ganancia si existe el producto
-                    const prod = productos[nombreProd];
-                    if (prod && prod.costo) {
-                        const costo = prod.costo * (d.cantidad || 0);
-                        gananciaDia += (d.subtotal || 0) - costo;
-                    }
-                });
             }
         }
     });
 
-    console.log('💰 Total del día:', totalDia);
-    console.log('📊 Ventas encontradas:', ventasHoy);
-
-    let texto = `REPORTE DIARIO - ${fechaLegible}\n\n`;
-    texto += `💰 VENDIDO: $${totalDia.toFixed(2)}`;
-    
-    if (gananciaDia > 0) {
-        texto += ` | 📈 GANANCIA: $${gananciaDia.toFixed(2)}`;
-    }
-    
-    texto += `\n\n`;
-    texto += `PAGOS: Efectivo($${resumenPagos.efectivo.toFixed(2)}) `;
-    texto += `Transf($${resumenPagos.transferencia.toFixed(2)}) `;
-    texto += `Tarjeta($${resumenPagos.tarjeta.toFixed(2)})\n`;
-    
-    texto += `\nPRODUCTOS:\n`;
-    
-    if (Object.keys(resumenProductos).length > 0) {
-        for (let p in resumenProductos) {
-            texto += `• ${p}: ${resumenProductos[p]} unidades\n`;
-        }
-    } else {
-        texto += '(No hay productos registrados)\n';
-    }
+    let texto = `REPORTE DIARIO - ${hoy.toLocaleDateString('es-AR')}\n\n`;
+    texto += `💰 VENDIDO: $${totalDia.toFixed(2)}\n`;
+    texto += `📊 CANT. VENTAS: ${ventasHoy}\n\n`;
+    texto += `PAGOS:\n`;
+    texto += `• Efectivo: $${resumenPagos.efectivo.toFixed(2)}\n`;
+    texto += `• Transf:   $${resumenPagos.transferencia.toFixed(2)}\n`;
+    texto += `• Tarjeta:  $${resumenPagos.tarjeta.toFixed(2)}\n`;
 
     reporteDiv.innerText = texto;
     reporteDiv.style.display = 'block';
@@ -460,32 +414,21 @@ function actualizarHistorial() {
                      String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
                      String(hoy.getDate()).padStart(2, '0');
     
-    console.log('📜 Actualizando historial para:', fechaHoy);
-    
-    // Filtrar y mapear ventas con índice
     const ventasHoy = ventas
         .map((v, i) => ({...v, idx: i}))
         .filter(v => {
-            // Comparar fechas de forma flexible
             if (v.fecha === fechaHoy) return true;
-            
             if (v.fecha && v.fecha.includes('/')) {
                 const partes = v.fecha.split('/');
-                if (partes.length === 3) {
-                    const fechaConv = partes[2] + '-' + 
-                                     partes[1].padStart(2, '0') + '-' + 
-                                     partes[0].padStart(2, '0');
-                    return fechaConv === fechaHoy;
-                }
+                const fechaConv = partes[2] + '-' + partes[1].padStart(2, '0') + '-' + partes[0].padStart(2, '0');
+                return fechaConv === fechaHoy;
             }
             return false;
         })
-        .reverse(); // Más recientes primero
-    
-    console.log('📋 Ventas de hoy para historial:', ventasHoy.length);
+        .reverse();
     
     if (ventasHoy.length === 0) {
-        lista.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #94a3b8;">Sin ventas hoy</td></tr>';
+        lista.innerHTML = '<tr><td colspan="5" style="text-align: center;">Sin ventas hoy</td></tr>';
         return;
     }
 
@@ -498,7 +441,7 @@ function actualizarHistorial() {
             <td>${cantItems} items</td>
             <td style="font-weight: bold; color: #16a34a;">$${(v.total || 0).toFixed(2)}</td>
             <td style="text-transform: capitalize;">${v.formaPago || 'N/A'}</td>
-            <td><button class="btn-eliminar" onclick="anularVenta(${v.idx})" style="padding: 5px 10px; font-size: 12px;">✕ Anular</button></td>
+            <td><button class="btn-eliminar" onclick="anularVenta(${v.idx})" style="padding: 2px 8px;">✕</button></td>
         `;
         lista.appendChild(tr);
     });
@@ -507,18 +450,14 @@ function actualizarHistorial() {
 function anularVenta(index) {
     Swal.fire({
         title: '¿Anular venta?',
-        text: 'Se restaurará el stock de los productos',
+        text: 'Se restaurará el stock.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Sí, anular',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: 'Sí, anular'
     }).then((result) => {
         if (result.isConfirmed) {
             const v = ventas[index];
-            
-            // Restaurar stock
             if (v.detalle && Array.isArray(v.detalle)) {
                 v.detalle.forEach(item => {
                     if (productos[item.producto]) {
@@ -526,164 +465,74 @@ function anularVenta(index) {
                     }
                 });
             }
-            
             guardarProductos();
             eliminarVentaDeMemoria(index);
             
-            // Actualizar todo
             actualizarHistorial();
             actualizarGraficos(ventas, productos);
             verReporte();
             mostrarInventario();
             
-            Swal.fire({
-                title: 'Venta anulada',
-                text: 'Stock restaurado correctamente',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            });
+            Swal.fire('Venta anulada', '', 'success');
         }
     });
 }
-// ====== BUSCA ESTA FUNCIÓN EN TU APP.JS Y REEMPLÁZALA ======
 
 function exportarAExcel() {
     const hoy = new Date();
     const fechaHoy = hoy.getFullYear() + '-' + 
                      String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
                      String(hoy.getDate()).padStart(2, '0');
-    const fechaLegible = hoy.toLocaleDateString('es-AR');
-    
-    console.log('📥 Exportando reporte para:', fechaHoy);
     
     let totalDia = 0;
-    let resumenProductos = {};
-    let resumenPagos = { efectivo: 0, transferencia: 0, tarjeta: 0 };
     let ventasHoy = [];
 
-    // Filtrar ventas de hoy
     ventas.forEach(v => {
         let esHoy = false;
-        
-        if (v.fecha === fechaHoy) {
-            esHoy = true;
-        } else if (v.fecha && v.fecha.includes('/')) {
+        if (v.fecha === fechaHoy) esHoy = true;
+        else if (v.fecha && v.fecha.includes('/')) {
             const partes = v.fecha.split('/');
-            if (partes.length === 3) {
-                const fechaConv = partes[2] + '-' + 
-                                 partes[1].padStart(2, '0') + '-' + 
-                                 partes[0].padStart(2, '0');
-                esHoy = (fechaConv === fechaHoy);
-            }
+            const fechaConv = partes[2] + '-' + partes[1].padStart(2, '0') + '-' + partes[0].padStart(2, '0');
+            esHoy = (fechaConv === fechaHoy);
         }
         
         if (esHoy) {
             ventasHoy.push(v);
             totalDia += v.total || 0;
-            
-            if (resumenPagos[v.formaPago] !== undefined) {
-                resumenPagos[v.formaPago] += v.total || 0;
-            }
-            
-            if (v.detalle && Array.isArray(v.detalle)) {
-                v.detalle.forEach(d => {
-                    const prod = d.producto;
-                    resumenProductos[prod] = (resumenProductos[prod] || 0) + (d.cantidad || 0);
-                });
-            }
         }
     });
     
-    console.log('📊 Ventas a exportar:', ventasHoy.length);
-    
     if (ventasHoy.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Sin datos',
-            text: 'No hay ventas de hoy para exportar'
-        });
+        Swal.fire({ icon: 'warning', title: 'Sin datos', text: 'No hay ventas hoy.' });
         return;
     }
     
-    // Crear contenido CSV
-    let csv = 'REPORTE DIARIO - ' + fechaLegible + '\n\n';
-    
-    // RESUMEN
-    csv += 'RESUMEN DEL DIA\n';
-    csv += 'Total Vendido;$' + totalDia.toFixed(2) + '\n';
-    csv += 'Numero de Ventas;' + ventasHoy.length + '\n\n';
-    
-    // FORMAS DE PAGO
-    csv += 'FORMAS DE PAGO\n';
-    csv += 'Forma de Pago;Total\n';
-    csv += 'Efectivo;$' + resumenPagos.efectivo.toFixed(2) + '\n';
-    csv += 'Transferencia;$' + resumenPagos.transferencia.toFixed(2) + '\n';
-    csv += 'Tarjeta;$' + resumenPagos.tarjeta.toFixed(2) + '\n\n';
-    
-    // PRODUCTOS VENDIDOS
-    csv += 'PRODUCTOS VENDIDOS\n';
-    csv += 'Producto;Cantidad\n';
-    for (let p in resumenProductos) {
-        csv += p + ';' + resumenProductos[p] + '\n';
-    }
-    csv += '\n';
-    
-    // DETALLE DE VENTAS
-    csv += 'DETALLE DE VENTAS\n';
-    csv += 'Fecha;Hora;Forma de Pago;Total;Productos\n';
+    let csv = 'REPORTE DIARIO - ' + fechaHoy + '\n\n';
+    csv += 'Fecha;Hora;Forma Pago;Total;Productos\n';
     
     ventasHoy.forEach(v => {
-        const productos = v.detalle 
-            ? v.detalle.map(d => d.producto + ' x' + d.cantidad).join(' | ')
-            : 'Sin detalle';
-        
-        csv += (v.fechaLegible || v.fecha) + ';';
-        csv += (v.hora || 'N/A') + ';';
-        csv += (v.formaPago || 'N/A') + ';';
-        csv += '$' + (v.total || 0).toFixed(2) + ';';
-        csv += '"' + productos + '"\n';
+        const prodStr = v.detalle ? v.detalle.map(d => d.producto + ' x' + d.cantidad).join(' | ') : '';
+        csv += `${v.fecha};${v.hora};${v.formaPago};$${v.total};${prodStr}\n`;
     });
     
-    console.log('✅ CSV generado, tamaño:', csv.length, 'caracteres');
-    
-    // Crear y descargar archivo
-    const BOM = '\uFEFF'; // Para que Excel reconozca UTF-8
-    const blob = new Blob([BOM + csv], { 
-        type: 'text/csv;charset=utf-8;' 
-    });
-    
-    const link = document.createElement('a');
+    csv += `\nTOTAL;$${totalDia}\n`;
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'Reporte_' + fechaHoy + '.csv');
-    link.style.visibility = 'hidden';
-    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Reporte_${fechaHoy}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    // Liberar memoria
-    URL.revokeObjectURL(url);
-    
-    Swal.fire({
-        icon: 'success',
-        title: '¡Exportado!',
-        text: 'Archivo: Reporte_' + fechaHoy + '.csv',
-        timer: 2000,
-        showConfirmButton: false
-    });
-    
-    console.log('📥 Descarga iniciada');
 }
 
 function reiniciarReporte() {
     verReporte();
-    Swal.fire('Actualizado', 'Reporte sincronizado.', 'success');
+    Swal.fire('Reporte Actualizado', '', 'success');
 }
 
-// ====== TICKET E IMPRESIÓN (FUNCIONES RECUPERADAS) ======
+// ====== TICKET E IMPRESIÓN ======
 function prepararTicket(venta) {
     const elFecha = document.getElementById('ticketFecha');
     const elHora = document.getElementById('ticketHora');
@@ -767,80 +616,3 @@ window.addEventListener('load', () => {
     actualizarHistorial();
     actualizarGraficos(ventas, productos);
 });
-// ====== FUNCIONES DE DEBUG (AGREGAR AL FINAL DE APP.JS) ======
-
-// Función para ver todas las ventas y sus fechas
-window.debugVentas = function() {
-    console.log('🔍 DEBUG DE VENTAS');
-    console.log('═══════════════════════════════════');
-    
-    const hoy = new Date();
-    const fechaHoy = hoy.getFullYear() + '-' + 
-                     String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
-                     String(hoy.getDate()).padStart(2, '0');
-    
-    console.log('📅 Fecha de HOY:', fechaHoy);
-    console.log('📊 Total de ventas:', ventas.length);
-    console.log('');
-    
-    ventas.forEach((v, i) => {
-        console.log('Venta ' + (i + 1) + ':');
-        console.log('  Fecha guardada:', v.fecha);
-        console.log('  Total: $' + v.total);
-        console.log('  Forma pago:', v.formaPago);
-        console.log('  Es de hoy?', v.fecha === fechaHoy ? 'SI' : 'NO');
-        console.log('');
-    });
-    
-    const ventasHoy = ventas.filter(v => v.fecha === fechaHoy);
-    console.log('💰 Ventas de HOY:', ventasHoy.length);
-};
-
-// Función para crear venta de prueba
-window.crearVentaPrueba = function() {
-    if (Object.keys(productos).length === 0) {
-        alert('No hay productos. Agrega productos primero.');
-        return;
-    }
-    
-    const hoy = new Date();
-    const fechaFormateada = hoy.getFullYear() + '-' + 
-                           String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
-                           String(hoy.getDate()).padStart(2, '0');
-    
-    const primerProducto = Object.keys(productos)[0];
-    const prod = productos[primerProducto];
-    
-    const ventaPrueba = {
-        fecha: fechaFormateada,
-        fechaLegible: hoy.toLocaleDateString('es-AR'),
-        hora: hoy.toLocaleTimeString('es-AR'),
-        total: prod.precio * 2,
-        formaPago: 'efectivo',
-        pago: prod.precio * 2,
-        vuelto: 0,
-        detalle: [
-            {
-                producto: primerProducto,
-                cantidad: 2,
-                subtotal: prod.precio * 2
-            }
-        ]
-    };
-    
-    ventas.push(ventaPrueba);
-    guardarVentas();
-    
-    console.log('Venta de prueba creada:', ventaPrueba);
-    
-    actualizarGraficos(ventas, productos);
-    
-    alert('Venta de prueba creada para HOY');
-};
-
-console.log('');
-console.log('FUNCIONES DISPONIBLES:');
-console.log('debugVentas() - Ver ventas');
-console.log('crearVentaPrueba() - Crear venta de prueba');
-console.log('');
-

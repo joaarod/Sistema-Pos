@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - POS</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos específicos para POS simplificado */
+        body {
+            padding: 10px;
+        }
+        
+        .pos-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 20px);
+        }
+        
+        .panel-venta-simple {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .titulo-pos {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+        }
+        
+        .venta-rapida-fiambre {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .venta-rapida-fiambre h3 {
+            color: #f59e0b;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-precio-rapido {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .carrito-scroll {
+            flex: 1;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        
+        .btn-link-admin {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #64748b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .btn-link-admin:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 900px) {
+            .pos-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Botón para ir a administración -->
+    <a href="index.html" class="btn-link-admin">⚙️ Ir a Administración</a>
+    
+    <div class="pos-container">
+        
+        <!-- COLUMNA IZQUIERDA: VENTA -->
+        <div class="panel-venta-simple">
+            <h1 class="titulo-pos">💰 Punto de Venta</h1>
+            
+            <!-- VENTA RÁPIDA DE FIAMBRES -->
+            <div class="venta-rapida-fiambre">
+                <h3>🥩 Venta Rápida (Fiambre/Producto sin registro)</h3>
+                <div class="input-precio-rapido">
+                    <div>
+                        <label style="font-size: 0.85rem; color: #92400e;">Descripción</label>
+                        <input type="text" id="nombreRapido" placeholder="Ej: Jamón cocido" style="border-color: #f59e0b;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem; color: #92400e;">Precio ($)</label>
+                        <input type="number" id="precioRapido" placeholder="0.00" step="0.01" style="border-color: #f59e0b;">
+                    </div>
+                    <button onclick="agregarVentaRapida()" class="btn-add" style="height: 45px; margin: 0;">➕</button>
+                </div>
+            </div>
+            
+            <!-- BÚSQUEDA DE PRODUCTOS REGISTRADOS -->
+            <div class="buscar-container" style="position: relative;"> <input id="buscador" type="text" placeholder="🔍 Buscar producto registrado o escanear código...">
+    
+                <ul id="listaProductos"></ul>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input id="ventaCantidad" type="number" value="1" min="1">
+                </div>
+                <button id="btnAgregar" class="btn-add">➕ Agregar</button>
+            </div>
+            
+            <!-- CARRITO -->
+            <div class="carrito-scroll">
+                <h3 style="margin-bottom: 10px;">🛒 Carrito de Compra</h3>
+                <table id="tabla" style="font-size: 0.9rem;">
+                    <tr><th>Producto</th><th>Cant.</th><th>Subtotal</th><th></th></tr>
+                </table>
+            </div>
+            
+            <div id="total" class="total-display">Total: $0.00</div>
+            
+            <div class="form-group">
+                <select id="formaPago">
+                    <option value="efectivo">💵 Efectivo</option>
+                    <option value="transferencia">🏦 Transferencia</option>
+                    <option value="tarjeta">💳 Tarjeta</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <input id="pago" type="number" step="0.01" placeholder="Pago del Cliente ($)">
+            </div>
+            
+            <div id="vuelto" class="vuelto-display"></div>
+            
+            <div class="button-group">
+                <button id="btnFinalizar" class="btn-success">✅ Cobrar</button>
+                <button id="btnNueva" class="btn-secondary">🗑️ Limpiar</button>
+            </div>
+            
+            <button id="btnImprimirTicket" class="btn-print" style="display: none;">🖨️ Imprimir Ticket</button>
+        </div>
+        
+        <!-- COLUMNA DERECHA: CATÁLOGO -->
+        <div class="panel panel-inventario" style="height: 100%;">
+            <h2>📊 Catálogo de Productos</h2>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-categoria="">📋 Todos</button>
+                <button class="tab-btn" data-categoria="Promos" style="color: #dc2626; border-color: #dc2626; font-weight: 800;">🔥 Promos</button>
+                <button class="tab-btn" data-categoria="Bebidas">🥤 Bebidas</button>
+                <button class="tab-btn" data-categoria="Snacks">🍿 Snacks</button>
+                <button class="tab-btn" data-categoria="Fiambres">🥩 Fiambres</button>
+                <button class="tab-btn" data-categoria="Almacén">🛒 Almacén</button>
+                <button class="tab-btn" data-categoria="Limpieza">🧹 Limpieza</button>
+                <button class="tab-btn" data-categoria="Otros">📌 Otros</button>
+            </div>
+            
+            <div class="buscar-container">
+                <input id="buscadorInventario" type="text" placeholder="🔍 Filtrar inventario...">
+            </div>
+            
+            <div id="inventarioLista" class="inventario-grid" style="max-height: calc(100vh - 300px);"></div>
+        </div>
+        
+    </div>
+    
+    <!-- TICKET OCULTO -->
+    <div id="ticketImpresion" class="ticket-impresion">
+        <div class="ticket-header">
+            <h2>ALMACÉN</h2>
+            <p>Sistema POS</p>
+            <p id="ticketFecha"></p>
+            <p id="ticketHora"></p>
+        </div>
+        <hr>
+        <table class="ticket-tabla">
+            <thead><tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr></thead>
+            <tbody id="ticketDetalle"></tbody>
+        </table>
+        <hr>
+        <div class="ticket-totales">
+            <p id="ticketTotal"></p>
+            <p id="ticketFormaPago"></p>
+            <p id="ticketPago"></p>
+            <p id="ticketVuelto"></p>
+        </div>
+        <div class="ticket-footer">
+            <p>¡Gracias por su compra!</p>
+            <p>Vuelva pronto</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="pos.js"></script>
+    
+</body>
+</html>
