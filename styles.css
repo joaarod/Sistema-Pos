@@ -545,81 +545,118 @@ tr:hover {
 }
 
 @media print {
+    /* 1. Ocultar todo lo que no sea el ticket */
     body * {
         visibility: hidden;
     }
     
-    .ticket-impresion, .ticket-impresion * {
-        visibility: visible;
+    .pos-container, .container, .main-nav, .area, 
+    .btn-volver, .btn-theme-toggle, .swal2-container,
+    .btn-link-admin {
+        display: none !important;
     }
-    
-    .ticket-impresion {
-        display: block;
+
+    /* 2. Configuración del "Papel" del Ticket */
+    #ticketImpresion {
+        display: block !important;
+        visibility: visible !important;
         position: absolute;
         left: 0;
         top: 0;
-        width: 80mm;
-        padding: 5mm;
+        /* Ancho estándar de impresoras térmicas (80mm) */
+        width: 80mm !important; 
+        padding: 5px !important;
+        background: white !important;
+        color: black !important;
+        font-family: 'Courier New', Courier, monospace !important; /* Fuente tipo ticket */
     }
-}
 
-.ticket-header {
-    text-align: center;
-    margin-bottom: 10px;
-}
+    /* 3. Hacer visibles los elementos internos */
+    #ticketImpresion * {
+        visibility: visible !important;
+        color: black !important;
+    }
 
-.ticket-header h2 {
-    font-size: 18px;
-    margin: 0;
-    font-weight: bold;
-}
+    /* 4. Estilo del ENCABEZADO (Centrado y Grande) */
+    .ticket-header {
+        text-align: center !important;
+        margin-bottom: 10px;
+        border-bottom: 1px dashed black;
+        padding-bottom: 10px;
+    }
+    
+    .ticket-header h2 {
+        font-size: 22px !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+        margin: 0 0 5px 0 !important;
+    }
+    
+    .ticket-header p {
+        font-size: 12px !important;
+        margin: 2px 0 !important;
+    }
 
-.ticket-header p {
-    margin: 2px 0;
-    font-size: 11px;
-}
+    /* 5. Estilo de la TABLA DE PRODUCTOS */
+    .ticket-tabla {
+        width: 100% !important;
+        border-collapse: collapse;
+        font-size: 12px !important;
+        margin-bottom: 10px;
+    }
 
-.ticket-tabla {
-    width: 100%;
-    font-size: 11px;
-}
+    .ticket-tabla th {
+        text-align: left;
+        border-bottom: 1px solid black;
+        padding: 5px 0;
+        text-transform: uppercase;
+    }
+    
+    .ticket-tabla td {
+        padding: 5px 0;
+    }
 
-.ticket-tabla th {
-    text-align: left;
-    padding: 3px 0;
-    background: none;
-    color: #000;
-    font-weight: bold;
-}
+    /* Alinear precios a la derecha para que se vean ordenados */
+    .ticket-tabla td:nth-child(3), 
+    .ticket-tabla td:nth-child(4),
+    .ticket-tabla th:nth-child(3), 
+    .ticket-tabla th:nth-child(4) {
+        text-align: right;
+    }
 
-.ticket-tabla td {
-    padding: 3px 0;
-    border: none;
-}
+    /* 6. Estilo de TOTALES (Alineados a la derecha y grandes) */
+    .ticket-totales {
+        text-align: right !important;
+        border-top: 1px dashed black;
+        padding-top: 10px;
+        margin-top: 10px;
+        font-size: 14px !important;
+    }
 
-.ticket-totales {
-    margin-top: 10px;
-    font-weight: bold;
-}
+    .ticket-totales p {
+        margin: 3px 0 !important;
+    }
 
-.ticket-totales p {
-    margin: 3px 0;
-}
+    /* El TOTAL final bien grande */
+    #ticketTotal {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        margin-bottom: 5px !important;
+    }
 
-.ticket-footer {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 11px;
-}
-
-.ticket-footer p {
-    margin: 2px 0;
-}
-
-hr {
-    border: none;
-    border-top: 1px dashed #000;
-    margin: 8px 0;
+    /* 7. PIE DE PÁGINA (Centrado) */
+    .ticket-footer {
+        text-align: center !important;
+        margin-top: 20px;
+        font-size: 12px !important;
+        font-style: italic;
+    }
+    
+    /* Configuración de página para quitar márgenes y encabezados del navegador */
+    @page {
+        margin: 0;
+        size: auto;
+    }
 }
 /* ====== MODO OSCURO ====== */
 body.dark-mode {

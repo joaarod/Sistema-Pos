@@ -264,8 +264,6 @@ function finalizarVenta() {
             return;
         }
         document.getElementById('vuelto').innerText = `Vuelto: ${(pago - total).toFixed(2)}`;
-    } else {
-        document.getElementById('vuelto').innerText = '';
     }
 
     const hoy = new Date();
@@ -286,19 +284,36 @@ function finalizarVenta() {
     actualizarGraficos(ventas, productos);
     actualizarHistorial();
 
+    // Preparamos el ticket por si acaso
     prepararTicket(venta); 
-    const btnPrint = document.getElementById('btnImprimirTicket');
-    if(btnPrint) btnPrint.style.display = 'block';
 
+    // === AQUÍ ESTÁ LA SOLUCIÓN ===
     Swal.fire({
         icon: 'success',
         title: '¡Venta Exitosa!',
-        text: 'Venta registrada correctamente',
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => {
-        // Limpieza automática
-        nuevaVenta();
+        // Mostramos el vuelto en grande dentro de la alerta
+        html: `<h2 style="color: #16a34a; font-weight: bold;">Vuelto: $${(pago - total).toFixed(2)}</h2>`,
+        
+        // OPCIONES DE BOTONES
+        showDenyButton: true,        // Botón para imprimir
+        showCancelButton: false,
+        confirmButtonText: 'Nueva Venta ⏩',
+        denyButtonText: '🖨️ Imprimir Ticket',
+        
+        // TEMPORIZADOR INTELIGENTE (4 segundos)
+        // Si no haces nada, se limpia solo. Si quieres imprimir, tienes tiempo.
+        timer: 4000, 
+        timerProgressBar: true
+    }).then((result) => {
+        if (result.isDenied) {
+            // SI ELIGES IMPRIMIR:
+            imprimirTicket();
+            // Al volver de la impresión, limpiamos
+            nuevaVenta();
+        } else {
+            // SI ELIGES NUEVA VENTA O SE ACABA EL TIEMPO:
+            nuevaVenta();
+        }
     });
 }
 

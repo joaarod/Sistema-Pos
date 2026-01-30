@@ -241,23 +241,34 @@ function finalizarVenta() {
     agregarVentaAMemoria(venta);
     prepararTicket(venta);
     
-    document.getElementById('btnImprimirTicket').style.display = 'block';
-
+    // === AQUÍ ESTÁ LA SOLUCIÓN ===
     Swal.fire({
         icon: 'success',
         title: '¡Venta Exitosa!',
-        html: `<p style="font-size: 1.5rem; font-weight: bold; color: #16a34a;">Total: $${total.toFixed(2)}</p>`,
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => {
-        // === AQUÍ ESTÁ EL CAMBIO ===
-        // Esto limpia la pantalla automáticamente después del cartel verde
-        nuevaVenta();
-        
-        // También limpiamos los inputs de venta rápida por si acaso quedaron con datos
-        document.getElementById('nombreRapido').value = '';
-        document.getElementById('precioRapido').value = '';
+        html: `<h2 style="color: #16a34a; font-weight: bold;">Vuelto: $${(pago - total).toFixed(2)}</h2>`,
+        showDenyButton: true,
+        confirmButtonText: 'Nueva Venta ⏩',
+        denyButtonText: '🖨️ Imprimir Ticket',
+        timer: 4000,
+        timerProgressBar: true
+    }).then((result) => {
+        if (result.isDenied) {
+            imprimirTicket();
+            nuevaVenta();
+            limpiarInputsRapidos();
+        } else {
+            nuevaVenta();
+            limpiarInputsRapidos();
+        }
     });
+}
+
+// Pequeña ayuda para limpiar los inputs de venta rápida
+function limpiarInputsRapidos() {
+    const nr = document.getElementById('nombreRapido');
+    const pr = document.getElementById('precioRapido');
+    if(nr) nr.value = '';
+    if(pr) pr.value = '';
 }
 
 function nuevaVenta() {
