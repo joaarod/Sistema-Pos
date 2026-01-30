@@ -120,7 +120,7 @@ function mostrarInventario() {
 }
 
 function obtenerIconoCategoria(cat) {
-    const iconos = { 'Bebidas': '🥤', 'Snacks': '🍿', 'Fiambres': '🥩', 'Almacén': '🛒', 'Limpieza': '🧹', 'Otros': '📌' };
+    const iconos = { 'Bebidas': '🥤', 'Snacks': '🍿',  'Almacén': '🛒', 'Limpieza': '🧹', 'Otros': '📌' };
     return iconos[cat] || '📦';
 }
 

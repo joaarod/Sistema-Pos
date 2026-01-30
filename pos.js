@@ -104,7 +104,7 @@ function obtenerIconoCategoria(cat) {
     const iconos = { 
         'Bebidas': '🥤', 
         'Snacks': '🍿', 
-        'Fiambres': '🥩', 
+        
         'Almacén': '🛒', 
         'Limpieza': '🧹', 
         'Otros': '📌' 
